@@ -36,15 +36,6 @@ module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
     };
 
     function run(label){
-      function render(data){
-        var img = new Image();
-
-        img.onload = function(){
-          window._imagediff_.hasImage = true;
-        };
-        document.getElementById('image-diff').appendChild(img);
-        img.src = data.getImageDataUrl(label);
-      };
 
       resemble(document.getElementById('image-diff-one').files[0]).
         compareTo(document.getElementById('image-diff-two').files[0]).
@@ -53,16 +44,13 @@ module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
           var diffImage;
 
           if(Number(data.misMatchPercentage) > mismatchTolerance){
-            result = data.misMatchPercentage;
+            result = data;
           } else {
             result = false;
           }
           
           window._imagediff_.hasResult = true;
-
-          if(Number(data.misMatchPercentage) > mismatchTolerance){
-            render(data);
-          }
+          window._imagediff_.hasImage = true;
           
         });
     }

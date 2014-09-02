@@ -4,9 +4,10 @@ module.exports = function (root, page){
   var diffData = {
     createDiff: false
   };
+
   if(fs.isFile(root + page + '.png')){
     console.log("Initial File Exists: creating baseline comparison --", page);
-    
+
     diffData.createDiff = true;
     diffData.imgName = root + page + '.diff.png';
   } else {

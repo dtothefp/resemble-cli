@@ -1,23 +1,26 @@
 {
   "name": "resemble-cli",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "bin": {
-    "resemble-cli": "run-resemble.js"
-  },
+  "version": "0.0.1",
+  "description": "a fun little command line image differ",
   "dependencies": {
     "casperjs": "^1.1.0-beta3",
     "phantomjs": "^1.9.7-15",
     "resemblejs": "^1.1.2"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "bin": {
-      "build-debug": "./bin/build-debug.js"
+      "run-resemble": "./bin/run-resemble.js"
   },
-  "author": "",
-  "license": "ISC"
+  "engines": {
+      "node": ">= 0.6.x"
+  },
+  "author": {
+      "name": "David Fox-Powell",
+      "email": "dtothefp@gmail.com",
+      "url": "http://dfpdev.com/"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/dtothefp/resemble-cli"
+  }
 }

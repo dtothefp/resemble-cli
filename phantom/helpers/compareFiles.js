@@ -7,11 +7,9 @@ function copyAndReplaceFile(diff, base){
     fs.remove(base);
   }
   fs.copy(diff, base);
-  fs.remove(diff);
-  console.log('copy and replace');
 }
 
-function asyncCompareCallback(isSame, mismatch){
+function asyncCompareCallback(isSame, resembleData){
   var casper = phantom.global.casper;
   var file = phantom.global.diffImg;
   var _failures = phantom.global.failures;
@@ -31,54 +29,31 @@ function asyncCompareCallback(isSame, mismatch){
         });
       },
       function () {
-        var failFile, safeFileName, increment;
-        // DPF NOTE: if there is a failures directory specified in the init function
-        if(_failures !== undefined){
-          if ( !fs.isDirectory(_failures) ) {
-            fs.makeDirectory(_failures);
-          }
-
-          // flattened structure for failed diffs so that it is easier to preview
-          failFile = _failures + fs.separator + file.split(/\/|\\/g).pop().replace('.diff.png', '').replace('.png', '');
-          // safeFileName = failFile;
-          // increment = 0;
-
-          // while ( fs.isFile(safeFileName+'.fail.png') ){
-          //   increment++;
-          //   safeFileName = failFile+'.'+increment;
-          // }
-
-          failFile += '.fail.png';
-          casper.captureSelector(failFile, 'img');
-
-          test.failFile = failFile;
-          // remove the old failed file if it exists and copy the new failed file to the failures directory
-          copyAndReplaceFile(file, failFile);
-          console.log('Failure! Saved to', failFile, file);
-        }
-      
         casper.evaluate(function(){
           window._imagediff_.hasImage = false;
         });
 
-        if(mismatch){
-          test.mismatch = mismatch;
+        if(resembleData.misMatchPercentage){
+          test.mismatch = resembleData.misMatchPercentage;
           // copy diff file in place of the base comparison file
           copyAndReplaceFile(file, baseFile);
           messages._onFail(test); // casper.test.fail throws and error, this function call is aborted
-          return;  // Just to make it clear what is happening
         } else {
          messages._onTimeout(test);
         }
+
+        //cleanup
+        fs.remove(file);
 
       }, function(){},
       10000
     );
   } else {
+    fs.remove(file);
     test.success = true;
     messages._onPass(test);
   }
-  return test;
+  return resembleData;
 }
 
 module.exports = function() {

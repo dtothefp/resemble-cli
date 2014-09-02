@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var phantomBinaryPath = require('phantomjs').path;
 var args;
 var opts = {
-    cwd: '../phantom/',
+    cwd: __dirname + '/../phantom/',
     stdio: 'inherit'
 }
 var debug = false;
+var runExec = false;
 var screensDir = 'screenshots';
 var options = {
   width: 1024,
@@ -33,6 +35,8 @@ process.argv.forEach(function(arg) {
     options.pages = arg.replace(/pages\=/, '').split(',');
   } else if ( /screensDir\=/.test(arg) ) {
     screensDir = arg.replace(/screensDir\=/, '').split(',');
+  } else if ( arg === '--exec' ) {
+    runExec = true;
   }
 
 });
@@ -51,15 +55,36 @@ if(options.url.substr(-1) !== '/') {
 
 options.screenshotPath = options.rootPath + screensDir;
 
-
 if( debug ) {
   args = ['--remote-debugger-port=9000', '--remote-debugger-autorun=false', __dirname + '/../phantom/runner.js', JSON.stringify(options)];
 } else {
   args = [__dirname + '/../phantom/runner.js', JSON.stringify(options)];
 }
 
-var cp = spawn(phantomBinaryPath, args, opts);
+if ( runExec ) {
+  var optionsString = '';
 
-cp.on('close', function (code) {
-  console.log('child process exited with code ' + code);
-});
+  for(var key in options) {
+    var val = options[key];
+
+    if( Array.isArray(val) ) {
+      val = val.join(',');
+    }
+
+    optionsString += key + '=' + val + ' ';
+  }
+
+  args.splice(args.length - 1, 1);
+
+  var ecpArgs = process.argv.slice(2, process.argv.length);
+
+  var ecp = exec(phantomBinaryPath + ' ' + args.join(' ') + ' ' + optionsString, {cwd: '../phantom/'}, function (error, stdout, stderr){
+    console.log(error, stdout, stderr);
+  });
+} else {
+  var cp = spawn(phantomBinaryPath, args, opts);
+
+  cp.on('close', function (code) {
+    console.log('child process exited with code ' + code);
+  });
+}

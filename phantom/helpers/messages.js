@@ -1,22 +1,18 @@
 exports._onPass = function (test){
-  var casper = phantom.global.casper;
-  console.log('\n');
   console.log('No changes found for screenshot ' + test.filename);
+  console.log('\n');
 }
 exports._onFail = function (test){
-  var casper = phantom.global.casper;
-  console.log('\n');
   console.log('Visual change found for screenshot ' + test.filename + ' (' + test.mismatch + '% mismatch)');
+  console.log('\n');
 }
 exports._onTimeout = function (test){
-  var casper = phantom.global.casper;
-  console.log('\n');
   console.log('Could not complete image comparison for ' + test.filename);
+  console.log('\n');
 }
 exports._onNewImage = function (test){
-  var casper = phantom.global.casper;
-  console.log('\n');
   console.log('New screenshot at '+ test.filename);
+  console.log('\n');
 }
 exports._onComplete = function (tests, noOfFails, noOfErrors){
 

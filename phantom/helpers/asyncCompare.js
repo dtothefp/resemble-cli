@@ -16,10 +16,8 @@ module.exports = function asyncCompare(baseImg, diffImg, func){
     'two': diffImg
   });
 
-  casper.evaluate(function(filename){
-    window._imagediff_.run( filename );
-  }, {
-    label: 'failed_' + baseImg
+  casper.evaluate(function(){
+    window._imagediff_.run();
   });
 
   casper.waitFor(
@@ -30,12 +28,12 @@ module.exports = function asyncCompare(baseImg, diffImg, func){
     },
     function () {
 
-      var mismatch = casper.evaluate(function(){
+      var resembleData = casper.evaluate(function(){
         return window._imagediff_.getResult();
       });
 
-      if(Number(mismatch)){
-        func(false, mismatch);
+      if(Number(resembleData.misMatchPercentage)){
+        func(false, resembleData);
       } else {
         func(true);
       }
