@@ -1,0 +1,23 @@
+{
+  "name": "resemble-cli",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "resemble-cli": "run-resemble.js"
+  },
+  "dependencies": {
+    "casperjs": "^1.1.0-beta3",
+    "phantomjs": "^1.9.7-15",
+    "resemblejs": "^1.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+      "build-debug": "./bin/build-debug.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
