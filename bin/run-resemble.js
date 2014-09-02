@@ -10,7 +10,7 @@ var opts = {
 }
 var debug = false;
 var runExec = false;
-var screensDir = 'screenshots';
+var screensDir = 'screenshots/';
 var options = {
   width: 1024,
   url: 'http://optimizely.com/',
@@ -28,13 +28,13 @@ process.argv.forEach(function(arg) {
   } else if( /url\=/.test(arg) ) {
     options.url = arg.replace(/url\=/, '');
   } else if( arg === '--debug' ) {
-    debug = true;
+    options.debug = true;
   } else if ( /logLevel\=/.test(arg) ) {
     options.logLevel = arg.replace(/logLevel\=/, '');
   } else if( /pages\=/.test(arg) ) {
-    options.pages = arg.replace(/pages\=/, '').split(',');
+    options.pages = arg.replace(/pages\=/, '').replace(/ /g,'').split(',');
   } else if ( /screensDir\=/.test(arg) ) {
-    screensDir = arg.replace(/screensDir\=/, '').split(',');
+    screensDir += arg.replace(/screensDir\=/, '').split(',');
   } else if ( arg === '--exec' ) {
     runExec = true;
   }
@@ -55,8 +55,8 @@ if(options.url.substr(-1) !== '/') {
 
 options.screenshotPath = options.rootPath + screensDir;
 
-if( debug ) {
-  args = ['--remote-debugger-port=9000', '--remote-debugger-autorun=false', __dirname + '/../phantom/runner.js', JSON.stringify(options)];
+if( options.debug ) {
+  args = ['--remote-debugger-port=5000', '--remote-debugger-autorun=false', __dirname + '/../phantom/runner.js', JSON.stringify(options)];
 } else {
   args = [__dirname + '/../phantom/runner.js', JSON.stringify(options)];
 }
@@ -85,6 +85,6 @@ if ( runExec ) {
   var cp = spawn(phantomBinaryPath, args, opts);
 
   cp.on('close', function (code) {
-    console.log('child process exited with code ' + code);
+    console.log('Congrats....successful session. Code: ' + code);
   });
 }

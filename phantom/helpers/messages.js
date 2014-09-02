@@ -7,7 +7,7 @@ exports._onFail = function (test){
   console.log('\n');
 }
 exports._onTimeout = function (test){
-  console.log('Could not complete image comparison for ' + test.filename);
+  console.log('Could not complete image comparison for ' + test.filename + ' your image was replaced regardless');
   console.log('\n');
 }
 exports._onNewImage = function (test){

@@ -35,12 +35,13 @@ module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
       }
     };
 
-    function run(label){
+    function run(){
 
       resemble(document.getElementById('image-diff-one').files[0]).
         compareTo(document.getElementById('image-diff-two').files[0]).
         ignoreAntialiasing(). // <-- muy importante
         onComplete(function(data){
+
           var diffImage;
 
           if(Number(data.misMatchPercentage) > mismatchTolerance){

@@ -35,18 +35,21 @@ phantom.casperTest = true;
 phantom.injectJs(fs.workingDirectory + '/../node_modules/casperjs/bin/bootstrap.js');
 
 var casper = require('casper').create({
+  //viewportSize: {width: 1000, height: 1000},
   logLevel: options.logLevel,
   verbose: true
 });
 
 phantom.global = {
   casper: casper,
-  libraryRoot: options.rootPath + 'node_modules'
+  libraryRoot: fs.workingDirectory + '/../node_modules'
 };
 
-// casper.on('remote.message', function(msg) {
-//     this.echo('remote message caught: ' + msg);
-// });
+if( options.debug ) {
+  casper.on('remote.message', function(msg) {
+    this.echo('remote message caught: ' + msg);
+  });
+}
 
 casper.start(options.url);
 
@@ -62,27 +65,32 @@ casper.each(options.pages, function(casper, page) {
       return Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
     });
 
+    this.viewport(options.width, documentHeight);
+
+    // this.capture(diffData.imgName, {
+    //   top: 0,
+    //   left: 0,
+    //   width: options.width,
+    //   height: options.height ? options.height : documentHeight
+    // });
+
+  }); 
+
+  this.then(function() {
+
     if(page === '') {
       page = 'home';
-    } else if( /\//.test(page) ) {
-      page = page.replace(/\//g, '_');
-    }
+    } 
 
     var diffData = helpers.fileNameGetter(options.screenshotPath, page);
 
-    this.capture(diffData.imgName, {
-      top: 0,
-      left: 0,
-      width: options.width,
-      height: options.height ? options.height : documentHeight
-    });
+    this.captureSelector(diffData.imgName, 'body');
 
     if( diffData.createDiff ) {
       phantom.global.diffImg = diffData.imgName;
       helpers.compareFiles();
     }
-
-  }); 
+  });
 });
 
 casper.run(function() {

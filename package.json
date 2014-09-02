@@ -1,6 +1,6 @@
 {
   "name": "resemble-cli",
-  "version": "0.0.1",
+  "version": "0.0.10",
   "description": "a fun little command line image differ",
   "dependencies": {
     "casperjs": "^1.1.0-beta3",

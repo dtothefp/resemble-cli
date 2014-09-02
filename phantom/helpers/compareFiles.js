@@ -33,14 +33,15 @@ function asyncCompareCallback(isSame, resembleData){
           window._imagediff_.hasImage = false;
         });
 
-        if(resembleData.misMatchPercentage){
+        if(resembleData && resembleData.misMatchPercentage){
           test.mismatch = resembleData.misMatchPercentage;
-          // copy diff file in place of the base comparison file
-          copyAndReplaceFile(file, baseFile);
           messages._onFail(test); // casper.test.fail throws and error, this function call is aborted
         } else {
          messages._onTimeout(test);
         }
+
+        // copy diff file in place of the base comparison file, overwrite no matter what
+        copyAndReplaceFile(file, baseFile);
 
         //cleanup
         fs.remove(file);
@@ -58,14 +59,10 @@ function asyncCompareCallback(isSame, resembleData){
 
 module.exports = function() {
   var casper = phantom.global.casper;
-  var libraryRoot = phantom.global.libraryRoot;
-  var html = libraryRoot + '/' + 'resemblejs/resemblejscontainer.html';
+  var html = fs.workingDirectory + '/config/resemble.html';
 
   if( !fs.isFile(html) ) {
-    fs.write(
-      html,
-      '<html><body>This blank HTML page is used for processing the images with Resemble.js</body></html>'
-      );
+    console.log('Comparison HTML file does not exist ' + html);
   }
 
   casper.thenOpen( html , function (){
