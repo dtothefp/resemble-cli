@@ -15,8 +15,19 @@ var casper = require('casper').create({
   verbose: true
 });
 
-casper.test.begin('Comparing Screenshots for: ' + options.url, 1, function(test) {
+phantom.global = {
+  casper: casper,
+  libraryRoot: options.rootPath + 'node_modules'
+};
+
+casper.on('remote.message', function(msg) {
+    this.echo('remote message caught: ' + msg);
+});
+
+casper.test.begin('Comparing Screenshots for: ' + options.url, options.pages.length, function(test) {
   casper.start(options.url);
+
+  phantom.global.test = test;
 
   casper.each(options.pages, function(casper, page) {
     this.thenOpen(options.url + page, function() {
@@ -46,21 +57,17 @@ casper.test.begin('Comparing Screenshots for: ' + options.url, 1, function(test)
       });
 
       if( diffData.createDiff ) {
-        helpers.compareFiles(options.rootPath + 'node_modules', diffData.imgName);
+        phantom.global.diffImg = diffData.imgName;
+        helpers.compareFiles();
       }
 
+      test.pass('Screenshots compared successfully');
 
     });
   });
 
-  // casper.then(function() {
-  //   helpers.initResemble(casper, options.rootPath + 'node_modules');
-
-    
-  // });
-
   casper.run(function() {
-    this.test.done();
+    test.done();
     phantom.exit();
   });
 });

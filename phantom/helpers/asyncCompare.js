@@ -1,18 +1,25 @@
-function asyncCompare(one, two, func){
+var initResemble = require('./initResemble');
 
-  if(!casper.evaluate(function(){ return window._imagediff_;})){
-    initClient();
+module.exports = function asyncCompare(baseImg, diffImg, func){
+  var casper = phantom.global.casper;
+
+  if(
+    !casper.evaluate(function(){ 
+      return window._imagediff_;
+    })
+  ) {
+    initResemble();
   }
 
   casper.fill('form#image-diff', {
-    'one': one,
-    'two': two
+    'one': baseImg,
+    'two': diffImg
   });
 
   casper.evaluate(function(filename){
     window._imagediff_.run( filename );
   }, {
-    label: _addLabelToFailedImage ? one : false
+    label: 'failed_' + baseImg
   });
 
   casper.waitFor(

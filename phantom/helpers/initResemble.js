@@ -1,71 +1,73 @@
-module.exports = function (casper, libraryRoot, _mismatchTolerance, _resembleOutputSettings){
+module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
+  var casper = phantom.global.casper;
+  var libraryRoot = phantom.global.libraryRoot;
 
   casper.page.injectJs(libraryRoot + '/' + 'resemblejs/resemble.js');
 
-  console.log('libraryRoot: ', libraryRoot + '/' + 'resemblejs/resemble.js');
+  casper.evaluate(function(mismatchTolerance, resembleOutputSettings){
+    var result;
 
-  // casper.evaluate(function(mismatchTolerance, resembleOutputSettings){
-    
-  //   var result;
+    var div = document.createElement('div');
 
-  //   var div = document.createElement('div');
+    // this is a bit of hack, need to get images into browser for analysis
+    div.style = "display:block;position:absolute;border:0;top:-1px;left:-1px;height:1px;width:1px;overflow:hidden;";
+    div.innerHTML = '<form id="image-diff">'+
+      '<input type="file" id="image-diff-one" name="one"/>'+
+      '<input type="file" id="image-diff-two" name="two"/>'+
+    '</form><div id="image-diff"></div>';
+    document.body.appendChild(div);
 
-  //   // this is a bit of hack, need to get images into browser for analysis
-  //   div.style = "display:block;position:absolute;border:0;top:-1px;left:-1px;height:1px;width:1px;overflow:hidden;";
-  //   div.innerHTML = '<form id="image-diff">'+
-  //     '<input type="file" id="image-diff-one" name="one"/>'+
-  //     '<input type="file" id="image-diff-two" name="two"/>'+
-  //   '</form><div id="image-diff"></div>';
-  //   document.body.appendChild(div);
+    if(resembleOutputSettings){
+      resemble.outputSettings(resembleOutputSettings);
+    }
 
-  //   if(resembleOutputSettings){
-  //     resemble.outputSettings(resembleOutputSettings);
-  //   }
+    if(!mismatchTolerance) {
+      mismatchTolerance = 0.05
+    }
 
-  //   window._imagediff_ = {
-  //     hasResult: false,
-  //     hasImage: false,
-  //     run: run,
-  //     getResult: function(){
-  //       this.hasResult = false;
-  //       return result;
-  //     }
-  //   };
+    window._imagediff_ = {
+      hasResult: false,
+      hasImage: false,
+      run: run,
+      getResult: function(){
+        window._imagediff_.hasResult = false;
+        return result;
+      }
+    };
 
-  //   function run(label){
+    function run(label){
+      function render(data){
+        var img = new Image();
 
-  //     function render(data){
-  //       var img = new Image();
+        img.onload = function(){
+          window._imagediff_.hasImage = true;
+        };
+        document.getElementById('image-diff').appendChild(img);
+        img.src = data.getImageDataUrl(label);
+      };
 
-  //       img.onload = function(){
-  //         window._imagediff_.hasImage = true;
-  //       };
-  //       document.getElementById('image-diff').appendChild(img);
-  //       img.src = data.getImageDataUrl(label);
-  //     }
+      resemble(document.getElementById('image-diff-one').files[0]).
+        compareTo(document.getElementById('image-diff-two').files[0]).
+        ignoreAntialiasing(). // <-- muy importante
+        onComplete(function(data){
+          var diffImage;
 
-  //     resemble(document.getElementById('image-diff-one').files[0]).
-  //       compareTo(document.getElementById('image-diff-two').files[0]).
-  //       ignoreAntialiasing(). // <-- muy importante
-  //       onComplete(function(data){
-  //         var diffImage;
-
-  //         if(Number(data.misMatchPercentage) > mismatchTolerance){
-  //           result = data.misMatchPercentage;
-  //         } else {
-  //           result = false;
-  //         }
-
-  //         window._imagediff_.hasResult = true;
-
-  //         if(Number(data.misMatchPercentage) > mismatchTolerance){
-  //           render(data);
-  //         }
+          if(Number(data.misMatchPercentage) > mismatchTolerance){
+            result = data.misMatchPercentage;
+          } else {
+            result = false;
+          }
           
-  //       });
-  //   }
-  // }, 
-  //   _mismatchTolerance,
-  //   _resembleOutputSettings
-  // );
+          window._imagediff_.hasResult = true;
+
+          if(Number(data.misMatchPercentage) > mismatchTolerance){
+            render(data);
+          }
+          
+        });
+    }
+  }, 
+    _mismatchTolerance,
+    _resembleOutputSettings
+  );
 }
