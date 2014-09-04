@@ -21,6 +21,12 @@ var options = {
   gm: false
 };
 
+if(options.rootPath.substr(-1) !== '/') {
+  options.rootPath += '/';
+}
+
+options.screenshotBase = options.rootPath + screensDir;
+
 process.argv.forEach(function(arg) {
 
   if( /height\=/.test(arg) ) {
@@ -44,10 +50,6 @@ process.argv.forEach(function(arg) {
   }
 
 });
-
-if(options.rootPath.substr(-1) !== '/') {
-  options.rootPath += '/';
-}
 
 if(screensDir.substr(-1) !== '/') {
   screensDir += '/';
@@ -90,7 +92,7 @@ if ( runExec ) {
 
   cp.on('close', function (code) {
     if ( code === 1 && options.gm ) {
-      compareWithGm('gm', options.screenshotPath);
+      compareWithGm('gm', options.screenshotBase);
       console.log('Comparing with GraphicsMagick\n');
     } else {
       console.log('Congrats....successful session.');

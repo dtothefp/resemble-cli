@@ -78,13 +78,13 @@ casper.each(options.pages, function(casper, page) {
     //   height: options.height ? options.height : documentHeight
     // });
 
-  }); 
+  });
 
   this.then(function() {
 
     if(page === '') {
       page = 'home';
-    } 
+    }
 
     var diffData = helpers.fileNameGetter(options.screenshotPath, page);
 
@@ -105,7 +105,7 @@ casper.each(options.pages, function(casper, page) {
 casper.then(function() {
   if( options.gm && diffedImages.data.length > 0 ) {
     var json = JSON.stringify(diffedImages);
-    fs.write(fs.workingDirectory + '/config/diffFiles.json', json);
+    fs.write(options.screenshotBase + 'diffFiles.json', json);
   }
 });
 
