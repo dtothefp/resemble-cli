@@ -25,6 +25,7 @@ module.exports = function (root, page){
     diffData.createDiff = true;
     diffData.imgName = root + page + '.diff.png';
     console.log("Previous File Exists: creating baseline comparison --", diffData.imgName);
+    console.log('\n');
   } else {
     diffData.imgName = root + page + '.png';
     console.log("Initial File Doesn't Exist: creating baseline comparison --", diffData.imgName);

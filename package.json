@@ -4,23 +4,24 @@
   "description": "a fun little command line image differ",
   "dependencies": {
     "casperjs": "^1.1.0-beta3",
+    "gm": "^1.16.0",
     "phantomjs": "^1.9.7-15",
     "resemblejs": "^1.1.2"
   },
   "devDependencies": {},
   "bin": {
-      "run-resemble": "./bin/run-resemble.js"
+    "run-resemble": "./bin/run-resemble.js"
   },
   "engines": {
-      "node": ">= 0.6.x"
+    "node": ">= 0.6.x"
   },
   "author": {
-      "name": "David Fox-Powell",
-      "email": "dtothefp@gmail.com",
-      "url": "http://dfpdev.com/"
+    "name": "David Fox-Powell",
+    "email": "dtothefp@gmail.com",
+    "url": "http://dfpdev.com/"
   },
   "repository": {
-      "type": "git",
-      "url": "https://github.com/dtothefp/resemble-cli"
+    "type": "git",
+    "url": "https://github.com/dtothefp/resemble-cli"
   }
 }

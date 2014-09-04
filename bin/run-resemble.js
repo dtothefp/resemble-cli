@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+var fs = require('fs');
+var compareWithGm = require('../lib/');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var phantomBinaryPath = require('phantomjs').path;
@@ -16,7 +17,8 @@ var options = {
   url: 'http://optimizely.com/',
   logLevel: 'error',
   pages: [],
-  rootPath: /bin/.test( process.cwd() ) ? process.cwd().replace(/bin/g, '') : process.cwd()
+  rootPath: /bin/.test( process.cwd() ) ? process.cwd().replace(/bin/g, '') : process.cwd(),
+  gm: false
 };
 
 process.argv.forEach(function(arg) {
@@ -37,6 +39,8 @@ process.argv.forEach(function(arg) {
     screensDir += arg.replace(/screensDir\=/, '').split(',');
   } else if ( arg === '--exec' ) {
     runExec = true;
+  } else if ( arg === '--gm' ) {
+    options.gm = true;
   }
 
 });
@@ -85,6 +89,11 @@ if ( runExec ) {
   var cp = spawn(phantomBinaryPath, args, opts);
 
   cp.on('close', function (code) {
-    console.log('Congrats....successful session. Code: ' + code);
+    if ( code === 1 && options.gm ) {
+      compareWithGm('gm', options.screenshotPath);
+      console.log('Comparing with GraphicsMagick\n');
+    } else {
+      console.log('Congrats....successful session.');
+    }
   });
 }

@@ -1,5 +1,9 @@
 var fs = require('fs');
 var helpers = require('./helpers');
+var diffedImages = {
+  data: []
+};
+var diffsCreated = false;
 
 if(phantom.args.length > 1) {
   var options = {};
@@ -86,13 +90,30 @@ casper.each(options.pages, function(casper, page) {
 
     this.captureSelector(diffData.imgName, 'body');
 
-    if( diffData.createDiff ) {
+    if( diffData.createDiff && !options.gm ) {
       phantom.global.diffImg = diffData.imgName;
       helpers.compareFiles();
+    } else if ( diffData.createDiff && options.gm ){
+      diffedImages.data.push({
+        org: diffData.imgName.replace(/\.diff/, ''),
+        diff: diffData.imgName
+      });
     }
   });
 });
 
+casper.then(function() {
+  if( options.gm && diffedImages.data.length > 0 ) {
+    var json = JSON.stringify(diffedImages);
+    fs.write(fs.workingDirectory + '/config/diffFiles.json', json);
+  }
+});
+
+
 casper.run(function() {
-  phantom.exit();
+  if (diffedImages.data.length > 0) {
+    phantom.exit(1);
+  } else {
+    phantom.exit(0);
+  }
 });
