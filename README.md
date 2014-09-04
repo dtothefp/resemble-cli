@@ -10,12 +10,12 @@ run-resemble width=500 url=https://www.optimizely.com/ pages=about,contact,resou
 `resemble-cli` will compare screenshots, and overwrite previous versions if there was a visual change/mismatch.  This allows you to diff your images on GitHub through their pretty GUI.
 
 ###### Mobile
-![mobile](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/screenshots/mobile/home.png)
+![mobile](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/demo/mobile/home.png)
 
 
 ###### Tablet
-![tablet](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/screenshots/tablet/home.png)
+![tablet](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/demo/tablet/home.png)
 
 
 ###### Desktop
-![desktop](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/screenshots/desktop/home.png)
+![desktop](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/demo/desktop/home.png)
