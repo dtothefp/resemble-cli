@@ -5,30 +5,7 @@ var diffedImages = {
 };
 var diffsCreated = false;
 
-if(phantom.args.length > 1) {
-  var options = {};
-  phantom.args.forEach(function(arg) {
-
-    if( /height\=/.test(arg) ) {
-      options.height = +arg.replace(/height\=/, '');
-    } else if( /width\=/.test(arg) ) {
-      options.width = +arg.replace(/width\=/, '');
-    } else if( /url\=/.test(arg) ) {
-      options.url = arg.replace(/url\=/, '');
-    } else if ( /logLevel\=/.test(arg) ) {
-      options.logLevel = arg.replace(/logLevel\=/, '');
-    } else if( /pages\=/.test(arg) ) {
-      options.pages = arg.replace(/pages\=/, '').split(',');
-    } else if ( /screenshotPath\=/.test(arg) ) {
-      options.screenshotPath = arg.replace(/screenshotPath\=/, '');
-    } else if ( /rootPath\=/.test(arg) ) {
-      options.rootPath = arg.replace(/rootPath\=/, '');
-    }
-
-  });
-} else {
-  var options = JSON.parse(phantom.args[0]);
-}
+var options = JSON.parse(phantom.args[0]);
 
 options.pages.unshift('');
 

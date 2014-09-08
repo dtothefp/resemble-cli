@@ -11,12 +11,13 @@ var opts = {
 }
 var debug = false;
 var runExec = false;
-var screensDir = 'screenshots/';
+var screensDir = '';
 var options = {
   width: 1024,
   url: 'http://optimizely.com/',
   logLevel: 'error',
   pages: [],
+  screenshotRoot: 'screenshots/',
   rootPath: /bin/.test( process.cwd() ) ? process.cwd().replace(/bin/g, '') : process.cwd(),
   gm: false
 };
@@ -36,9 +37,9 @@ process.argv.forEach(function(arg) {
   } else if( /pages\=/.test(arg) ) {
     options.pages = arg.replace(/pages\=/, '').replace(/ /g,'').split(',');
   } else if ( /screensDir\=/.test(arg) ) {
-    screensDir += arg.replace(/screensDir\=/, '').split(',');
-  } else if ( arg === '--exec' ) {
-    runExec = true;
+    screensDir = arg.replace(/screensDir\=/, '');
+  } else if ( /screenshotRoot\=/.test(arg) ) {
+    options.screenshotRoot = arg.replace(/screenshotRoot=/, ''); 
   } else if ( arg === '--gm' ) {
     options.gm = true;
   }
@@ -49,6 +50,9 @@ if(options.rootPath.substr(-1) !== '/') {
   options.rootPath += '/';
 }
 
+if(options.screenshotRoot.substr(-1) !== '/') {
+  options.screenshotRoot += '/';
+}
 if(screensDir.substr(-1) !== '/') {
   screensDir += '/';
 }
@@ -57,7 +61,7 @@ if(options.url.substr(-1) !== '/') {
   options.url += '/';
 }
 
-options.screenshotPath = options.rootPath + screensDir;
+options.screenshotPath = options.rootPath + options.screenshotRoot + screensDir;
 
 if( options.debug ) {
   args = ['--remote-debugger-port=5000', '--remote-debugger-autorun=false', __dirname + '/../phantom/runner.js', JSON.stringify(options)];
@@ -65,35 +69,13 @@ if( options.debug ) {
   args = [__dirname + '/../phantom/runner.js', JSON.stringify(options)];
 }
 
-if ( runExec ) {
-  var optionsString = '';
+var cp = spawn(phantomBinaryPath, args, opts);
 
-  for(var key in options) {
-    var val = options[key];
-
-    if( Array.isArray(val) ) {
-      val = val.join(',');
-    }
-
-    optionsString += key + '=' + val + ' ';
+cp.on('close', function (code) {
+  if ( code === 1 && options.gm ) {
+    compareWithGm('gm', options.screenshotPath);
+    console.log('Comparing with GraphicsMagick\n');
+  } else {
+    console.log('Congrats....successful session.');
   }
-
-  args.splice(args.length - 1, 1);
-
-  var ecpArgs = process.argv.slice(2, process.argv.length);
-
-  var ecp = exec(phantomBinaryPath + ' ' + args.join(' ') + ' ' + optionsString, {cwd: '../phantom/'}, function (error, stdout, stderr){
-    console.log(error, stdout, stderr);
-  });
-} else {
-  var cp = spawn(phantomBinaryPath, args, opts);
-
-  cp.on('close', function (code) {
-    if ( code === 1 && options.gm ) {
-      compareWithGm('gm', options.screenshotPath);
-      console.log('Comparing with GraphicsMagick\n');
-    } else {
-      console.log('Congrats....successful session.');
-    }
-  });
-}
+});
