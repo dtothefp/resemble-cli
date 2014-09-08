@@ -22,6 +22,12 @@ var options = {
   gm: false
 };
 
+if(options.rootPath.substr(-1) !== '/') {
+  options.rootPath += '/';
+}
+
+options.screenshotBase = options.rootPath + screensDir;
+
 process.argv.forEach(function(arg) {
 
   if( /height\=/.test(arg) ) {
@@ -53,7 +59,8 @@ if(options.rootPath.substr(-1) !== '/') {
 if(options.screenshotRoot.substr(-1) !== '/') {
   options.screenshotRoot += '/';
 }
-if(screensDir.substr(-1) !== '/') {
+
+if(screensDir.substr(-1) !== '/' && !!screensDir) {
   screensDir += '/';
 }
 
