@@ -11,23 +11,23 @@ run-resemble width=500 url=https://www.optimizely.com/ pages=about,contact,resou
 ### Options
 
 #### screenshotRoot
-screenshotRoot=`<name for screenshot directory>`
+`screenshotRoot=<name for screenshot directory>`
 Default value: `'screenshots'`
 
 The name of the directory that will be created in the root of your application.
 
 #### screensDir
-screensDir=`<name for subdirectory inside screenshot directory>`
+`screensDir=<name for subdirectory inside screenshot directory>`
 Default value: `''`
 
 #### url
-url=`<some valid url>`
+`url=<some valid url>`
 Default value: `'http://optimizely.com/'`
 
 A string value specifying the root url where you would like screenshots taken and paths referenced from.
 
 #### width
-width=`<some seemingly reasonable screen width>`
+`width=<some seemingly reasonable screen width>`
 Default value: `1024`
 
 A number specifying the width at which screenshots should be taken.
@@ -40,7 +40,7 @@ A flag specifying if you would like to compare screenshots with [GraphicsMagick]
 #### --debug
 This flag will will run the Phantom child process script in debug mode on port 5000.
 
-If you would like to debug the node task I suggest globally installing node-inspector [build-debug](https://github.com/node-inspector/node-inspector) and running `node-debug' on the `run-resemble.js`script in the `bin' directory.
+If you would like to debug the node task I suggest globally installing node-inspector [build-debug](https://github.com/node-inspector/node-inspector) and running node-debug on the run-resemble.jsscript in the `bin' directory.
 
 ###### Mobile
 ![mobile](https://raw.githubusercontent.com/dtothefp/resemble-cli/master/demo/mobile/home.png)
