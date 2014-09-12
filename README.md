@@ -32,6 +32,18 @@ Default value: `1024`
 
 A number specifying the width at which screenshots should be taken.
 
+#### tolerance
+`tolerance=<some decimal tolerance>`
+Default value: `0.01`
+
+Mismatch tolerance allowed for overwriting.
+
+#### selector
+`selector=<some selector on the page>`
+Default value: `body`
+
+Selector for element on the page want the screenshot of, ex: #outer-wrapper.
+
 #### --gm
 *Note: If flagged as true ImageMagick or GraphicsMagick must be globally installed on the user's machine via HomeBrew or some other medium*
 
