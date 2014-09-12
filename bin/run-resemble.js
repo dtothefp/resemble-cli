@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var fs = require('fs');
-var compareWithGm = require('../lib/');
+var compareWith = require('../lib/');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var phantomBinaryPath = require('phantomjs').path;
@@ -19,6 +19,9 @@ var options = {
   pages: [],
   screenshotRoot: 'screenshots/',
   rootPath: /bin/.test( process.cwd() ) ? process.cwd().replace(/bin/g, '') : process.cwd(),
+  tolerance: 0.005,
+  selector: 'body',
+  debug: false,
   gm: false
 };
 
@@ -36,18 +39,22 @@ process.argv.forEach(function(arg) {
     options.width = +arg.replace(/width\=/, '');
   } else if( /url\=/.test(arg) ) {
     options.url = arg.replace(/url\=/, '');
-  } else if( arg === '--debug' ) {
-    options.debug = true;
   } else if ( /logLevel\=/.test(arg) ) {
     options.logLevel = arg.replace(/logLevel\=/, '');
   } else if( /pages\=/.test(arg) ) {
     options.pages = arg.replace(/pages\=/, '').replace(/ /g,'').split(',');
   } else if ( /screensDir\=/.test(arg) ) {
     screensDir = arg.replace(/screensDir\=/, '');
+  } else if ( /tolerance\=/.test(arg) ) {
+    options.tolerance = arg.replace(/tolerance\=/, '');
+  } else if( /selector\=/.test(arg) ) {
+    options.selector = arg.replace(/selector\=/, '');
   } else if ( /screenshotRoot\=/.test(arg) ) {
     options.screenshotRoot = arg.replace(/screenshotRoot=/, ''); 
   } else if ( arg === '--gm' ) {
     options.gm = true;
+  } else if( arg === '--debug' ) {
+    options.debug = true;
   }
 
 });
@@ -80,7 +87,7 @@ var cp = spawn(phantomBinaryPath, args, opts);
 
 cp.on('close', function (code) {
   if ( code === 1 && options.gm ) {
-    compareWithGm('gm', options.screenshotPath);
+    compareWith('gm', options.screenshotPath, options.tolerance);
     console.log('Comparing with GraphicsMagick\n');
   } else {
     console.log('Congrats....successful session.');

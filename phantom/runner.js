@@ -16,7 +16,7 @@ phantom.casperTest = true;
 phantom.injectJs(fs.workingDirectory + '/../node_modules/casperjs/bin/bootstrap.js');
 
 var casper = require('casper').create({
-  //viewportSize: {width: 1000, height: 1000},
+  viewportSize: {width: options.width, height: 1000},
   logLevel: options.logLevel,
   verbose: true
 });
@@ -46,7 +46,9 @@ casper.each(options.pages, function(casper, page) {
       return Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
     });
 
-    this.viewport(options.width, documentHeight);
+    if(options.selector === 'body'){
+      this.viewport(options.width, documentHeight);
+    }
 
     // this.capture(diffData.imgName, {
     //   top: 0,
@@ -65,11 +67,12 @@ casper.each(options.pages, function(casper, page) {
 
     var diffData = helpers.fileNameGetter(options.screenshotPath, page);
 
-    this.captureSelector(diffData.imgName, 'body');
+    this.captureSelector(diffData.imgName, options.selector);
 
     if( diffData.createDiff && !options.gm ) {
       phantom.global.diffImg = diffData.imgName;
-      helpers.compareFiles();
+      phantom.global.tolerance = Number(options.tolerance);
+      helpers.compareFiles(options.tolerance);
     } else if ( diffData.createDiff && options.gm ){
       diffedImages.data.push({
         org: diffData.imgName.replace(/\.diff/, ''),

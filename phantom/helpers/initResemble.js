@@ -1,10 +1,11 @@
-module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
+module.exports = function (){
   var casper = phantom.global.casper;
   var libraryRoot = phantom.global.libraryRoot;
+  var _mismatchTolerance = phantom.global.tolerance;
 
   casper.page.injectJs(libraryRoot + '/' + 'resemblejs/resemble.js');
 
-  casper.evaluate(function(mismatchTolerance, resembleOutputSettings){
+  casper.evaluate(function(mismatchTolerance){
     var result;
 
     var div = document.createElement('div');
@@ -16,10 +17,6 @@ module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
       '<input type="file" id="image-diff-two" name="two"/>'+
     '</form><div id="image-diff"></div>';
     document.body.appendChild(div);
-
-    if(resembleOutputSettings){
-      resemble.outputSettings(resembleOutputSettings);
-    }
 
     if(!mismatchTolerance) {
       mismatchTolerance = 0.05
@@ -56,7 +53,6 @@ module.exports = function (casper, _mismatchTolerance, _resembleOutputSettings){
         });
     }
   }, 
-    _mismatchTolerance,
-    _resembleOutputSettings
+    _mismatchTolerance
   );
 }
