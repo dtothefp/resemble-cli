@@ -34,7 +34,7 @@ A number specifying the width at which screenshots should be taken.
 
 #### tolerance
 `tolerance=<some decimal tolerance>`
-Default value: `0.01`
+Default value: `0`
 
 Mismatch tolerance allowed for overwriting.
 

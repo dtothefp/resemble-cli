@@ -19,7 +19,7 @@ var options = {
   pages: [],
   screenshotRoot: 'screenshots/',
   rootPath: /bin/.test( process.cwd() ) ? process.cwd().replace(/bin/g, '') : process.cwd(),
-  tolerance: 0.01,
+  tolerance: 0,
   selector: 'body',
   debug: false,
   gm: false
