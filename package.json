@@ -5,8 +5,8 @@
   "dependencies": {
     "casperjs": "^1.1.0-beta3",
     "gm": "^1.16.0",
-    "phantomjs": "^1.9.7-15",
-    "resemblejs": "^1.1.2"
+    "resemblejs": "^1.1.2",
+    "phantomjs": "~1.9.12"
   },
   "devDependencies": {},
   "bin": {
