@@ -2,10 +2,12 @@
   "name": "resemble-cli",
   "version": "0.0.18",
   "description": "a fun little command line image differ",
+  "peerDependencies": {
+    "phantomjs": "1.x"
+  },
   "dependencies": {
     "casperjs": "^1.1.0-beta3",
     "gm": "^1.16.0",
-    "phantomjs": "^1.9.7-15",
     "resemblejs": "^1.1.2"
   },
   "devDependencies": {},
